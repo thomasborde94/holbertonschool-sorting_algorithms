@@ -28,6 +28,4 @@ void quick_sort(int *array, size_t size)
 		array[i] = array[j];
 		array[j] = temp;
 	}
-	quick_sort(array, i);
-	quick_sort(array + i, size - i);
 }
