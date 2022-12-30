@@ -1,48 +1,43 @@
 #include "sort.h"
-
 /**
- * insertion_sort_list - sorts a doubly linked list using
- * insertion sort algorithm
- * @list: doubly linked list to sort
+ * insertion_sort_list - sorts an array of numbers in ascending order
+ *
+ * @list: doubly linked list
  * Return: void
  */
-
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *sorted = NULL;
+	listint_t *current, *temp;
 
-	while (*list != NULL)
+	if (!list)
+		return;
+
+	current = *list;
+
+	while (current)
 	{
-		listint_t *current = *list;
-		*list = (*list)->next;
-
-		if (sorted == NULL || current->n < sorted->n)
+		while (current->next && (current->n > current->next->n))
 		{
-			current->prev = NULL;
-			current->next = sorted;
+			temp = current->next;
+			current->next = temp->next;
+			temp->prev = current->prev;
 
-			if (sorted != NULL)
-			{
-				sorted->prev = current;
-			}
-			sorted = current;
-		}
-		else
-		{
-			listint_t *node = sorted;
+			if (current->prev)
+				current->prev->next = temp;
 
-			while (node->next != NULL && node->next->n < current->n)
-			{
-				node = node->next;
-			}
-			current->prev = node;
-			current->next = node->next;
-			node->next = current;
-			if (current->next != NULL)
-			{
-			current->next->prev = current;
-			}
+			if (temp->next)
+				temp->next->prev = current;
+
+			current->prev = temp;
+			temp->next = current;
+
+			if (temp->prev)
+				current = temp->prev;
+			else
+				*list = temp;
+
+			print_list(*list);
 		}
+		current = current->next;
 	}
-	*list = sorted;
 }
