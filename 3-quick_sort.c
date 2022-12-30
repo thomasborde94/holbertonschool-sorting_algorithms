@@ -1,31 +1,85 @@
 #include "sort.h"
 
 /**
- * quick_sort - a function that sorts an array of integers
- * @array: array of integer
- * @size: size of the structure
- **/
+ * partition - takes the last element of an array as the pivot
+ * and places it in its sorted position with all elements to the left smaller
+ * and all elements to the right bigger
+ * @array: array of integers
+ * @low: lowest index in array
+ * @high: highest index in array
+ * @size: size of entire original array
+ *
+ * Return: integer index where pivot was placed
+ */
+int partition(int *array, int low, int high, size_t size)
+{
+	int i, j, tmp, pivot;
+
+	pivot = array[high];
+
+	i = low - 1;
+	for (j = low; j <= high - 1; j++)
+	{
+		if (array[j] < pivot)
+		{
+			i++;
+			tmp = array[i];
+			array[i] = array[j];
+			array[j] = tmp;
+			if (i != j)
+				print_array(array, size);
+		}
+	}
+
+	array[high] = array[i + 1];
+	array[i + 1] = pivot;
+	if (array[high] != pivot)
+		print_array(array, size);
+
+	return (i + 1);
+}
+
+
+/**
+ * qs_recursive - recursive quicksort algorithm
+ * @array: int array to be partitioned and sorted
+ * @low: index where sub-array to be sorted starts
+ * @high: index where sub-array to be sorted ends
+ * @size: size of entire original array
+ *
+ * Return: No return value
+ */
+void qs_recursive(int *array, int low, int high, size_t size)
+{
+	int p;
+
+	if (low < high)
+	{
+		p = partition(array, low, high, size);
+		qs_recursive(array, low, p - 1, size);
+		qs_recursive(array, p + 1, high, size);
+	}
+}
+
+
+/**
+ * quick_sort - driver to run qs_recursive
+ * @array: array to be sorted
+ * @size: length of array
+ *
+ * Return: No return value
+ */
 void quick_sort(int *array, size_t size)
 {
-	size_t i, j;
-	int pivot, temp;
+	int len, low, high;
 
-	if (size < 2)
+	if (array == NULL)
 		return;
 
-	pivot = array[size / 2];
-	for (i = 0, j = size - 1;; i++, j--)
-	{
-		while (array[i] < pivot)
-			i++;
-		while (array[j] > pivot)
-			j--;
+	len = (int) size;
 
-		if (i >= j)
-			break;
+	low = 0;
+	high = len - 1;
 
-		temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
-	}
+	qs_recursive(array, low, high, size);
 }
